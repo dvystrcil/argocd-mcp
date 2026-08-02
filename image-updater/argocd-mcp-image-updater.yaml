@@ -3,7 +3,6 @@ kind: ImageUpdater
 metadata:
   name: argocd-mcp-iu
 spec:
-  namespace: argocd
   applicationRefs:
   - namePattern: argocd-mcp
     images:

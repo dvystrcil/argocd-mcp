@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: argocd-mcp
+  namespace: argocd-mcp
+  labels:
+    app: argocd-mcp
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: argocd-mcp
+  template:
+    metadata:
+      labels:
+        app: argocd-mcp
+    spec:
+      imagePullSecrets:
+        - name: argocd-mcp-harbor-pull
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+      - name: argocd-mcp
+        image: harbor.sirddail.net/ai/argocd-mcp:0.0.1
+        imagePullPolicy: Always
+        envFrom:
+        - secretRef:
+            name: argocd-mcp-secrets
+        ports:
+        - containerPort: 8080
+          name: http
+        resources:
+          requests:
+            memory: 256Mi
+            cpu: 100m
+          limits:
+            memory: 512Mi
+            cpu: 500m
+        startupProbe:
+          httpGet:
+            path: /healthz
+            port: http
+          failureThreshold: 30
+          periodSeconds: 2
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: http
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: http
+          periodSeconds: 30
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1000
+          runAsGroup: 1000
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+      hostNetwork: false
+      hostPID: false
+      volumes:
+      - name: tmp
+        emptyDir: {}

@@ -1,0 +1,22 @@
+apiVersion: argocd-image-updater.argoproj.io/v1alpha1
+kind: ImageUpdater
+metadata:
+  name: argocd-mcp-iu
+spec:
+  namespace: argocd
+  applicationRefs:
+  - namePattern: argocd-mcp
+    images:
+    - alias: argocd-mcp
+      imageName: harbor.sirddail.net/ai/argocd-mcp
+      commonUpdateSettings:
+        allowTags: regexp:^[0-9]+\.[0-9]+\.[0-9]+$
+        updateStrategy: semver
+        pullSecret: pullsecret:argocd-mcp/argocd-mcp-harbor-pull
+        forceUpdate: false
+    writeBackConfig:
+      method: git
+      gitConfig:
+        repository: https://github.com/dvystrcil/argocd-mcp.git
+        branch: main
+        writeBackTarget: kustomization:/overlays

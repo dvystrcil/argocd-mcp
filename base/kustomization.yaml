@@ -1,0 +1,8 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- namespace.yaml
+- deployment.yaml
+- service.yaml
+- harbor-pull-secret.yaml
+- argocd-mcp-secrets.yaml

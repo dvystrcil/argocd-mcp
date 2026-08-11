@@ -7,3 +7,4 @@ resources:
 - harbor-pull-secret.yaml
 - image-updater-rbac.yaml
 - argocd-mcp-secrets.yaml
+- vpa.yaml

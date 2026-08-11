@@ -5,4 +5,5 @@ resources:
 - deployment.yaml
 - service.yaml
 - harbor-pull-secret.yaml
+- image-updater-rbac.yaml
 - argocd-mcp-secrets.yaml

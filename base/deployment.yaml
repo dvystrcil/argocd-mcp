@@ -19,7 +19,7 @@ spec:
         app: argocd-mcp
     spec:
       imagePullSecrets:
-        - name: argocd-mcp-harbor-pull
+      - name: argocd-mcp-harbor-pull
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000
@@ -35,13 +35,14 @@ spec:
         ports:
         - containerPort: 8080
           name: http
+        # D-012 (VPA epic homelab#455): requests right-sized from the
+        # Off-mode VPA's measured target. Limits per D-022 (homelab#1212). See notes in the PR body.
         resources:
           requests:
-            memory: 256Mi
-            cpu: 100m
+            cpu: 25m
+            memory: 250Mi
           limits:
             memory: 512Mi
-            cpu: 500m
         startupProbe:
           httpGet:
             path: /healthz
